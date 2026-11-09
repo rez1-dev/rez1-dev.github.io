@@ -1,0 +1,76 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="index,follow">
+
+    <!-- Favicon (icon by Sergei Kokota) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <!-- Site title -->
+    <title>
+        {{- if .IsHome -}}
+            {{ site.Title }}
+        {{- else if .Page.Title -}}
+            {{ site.Title }} - {{ .Page.Title }}
+        {{- else -}}
+            {{ site.Title }}
+        {{- end -}}
+    </title>
+
+    <!-- Site description -->
+    {{- if .IsHome -}}
+        <meta name="description" content="{{ site.Params.description }}" />
+    {{- else -}}
+        <meta name="description" content="{{ or .Params.Description site.Params.description }}" />
+    {{- end }}
+
+    <!-- Theme (set early to avoid flash of incorrect theme) -->
+    <script>
+        (function () {
+            var stored = localStorage.getItem("theme");
+            var theme = stored
+                ? stored
+                : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+        function syncToggle(theme) {
+            var btn = document.querySelector(".theme-toggle");
+            if (btn) btn.setAttribute("aria-checked", theme === "dark" ? "true" : "false");
+        }
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute("data-theme");
+            var next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            syncToggle(next);
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            syncToggle(document.documentElement.getAttribute("data-theme"));
+        });
+    </script>
+
+    <!-- Styling -->
+    {{ with resources.Get "css/styles.css" }}
+        {{ if hugo.IsDevelopment }}
+            <link rel="stylesheet" href="{{ .RelPermalink }}">
+        {{ else }}
+            {{ with . | fingerprint }}
+                <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+            {{ end }}
+        {{ end }}
+    {{ end }}
+
+    <!-- RSS feed -->
+    {{ with .OutputFormats.Get "rss" }}
+        {{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
+    {{ end }}
+</head>

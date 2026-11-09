@@ -1,0 +1,20 @@
+baseURL = 'https://rez1-dev.github.io'
+languageCode = 'en-us'
+title = 'Rezoan S.'
+enableRobotsTXT = true
+
+[caches]
+    [caches.images]
+        dir = ':cacheDir/images'
+
+[markup]
+    [markup.highlight]
+        lineNos = true
+        style = 'dracula'
+
+[params]
+    description = 'Personal website of Rezoan S.'
+
+    [params.author]
+        name = 'Rezoan S.'
+        email = 'rez1@duck.com'
